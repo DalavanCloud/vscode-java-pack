@@ -3,11 +3,11 @@
   "displayName": "Java Extension Pack",
   "description": "Popular extensions for Java development and more.",
   "license": "MIT",
-  "version": "0.4.0",
+  "version": "0.14.0",
   "publisher": "vscjava",
   "preview": true,
   "engines": {
-    "vscode": "^1.26.0"
+    "vscode": "^1.52.0"
   },
   "aiKey": "b4a8a622-6ac7-4cf8-83aa-f325e1890795",
   "icon": "logo.png",
@@ -35,54 +35,205 @@
     "workspaceContains:pom.xml",
     "workspaceContains:build.gradle",
     "workspaceContains:mnvw",
-    "onCommand:java.overview"
+    "onCommand:java.overview",
+    "onCommand:java.showReleaseNotes",
+    "onWebviewPanel:java.overview",
+    "onCommand:java.runtime",
+    "onWebviewPanel:java.runtime",
+    "onCommand:java.gettingStarted",
+    "onWebviewPanel:java.gettingStarted",
+    "onCommand:java.extGuide",
+    "onWebviewPanel:java.extGuide",
+    "onCommand:java.welcome",
+    "onWebviewPanel:java.welcome",
+    "onCommand:java.classpathConfiguration",
+    "onWebviewPanel:java.classpathConfiguration",
+    "onWebviewPanel:java.markdownPreview",
+    "onCommand:java.formatterSettings"
   ],
   "contributes": {
     "commands": [
       {
+        "command": "java.welcome",
+        "category": "Java",
+        "title": "Welcome"
+      },
+      {
+        "command": "java.classpathConfiguration",
+        "category": "Java",
+        "title": "Configure Classpath"
+      },
+      {
         "command": "java.overview",
-        "title": "Java: Overview"
+        "category": "Java",
+        "title": "Overview"
+      },
+      {
+        "command": "java.showReleaseNotes",
+        "category": "Java",
+        "title": "Show Release Notes"
+      },
+      {
+        "command": "java.runtime",
+        "title": "Configure Java Runtime",
+        "category": "Java"
+      },
+      {
+        "command": "java.gettingStarted",
+        "category": "Java",
+        "title": "Getting Started"
+      },
+      {
+        "command": "java.extGuide",
+        "category": "Java",
+        "title": "Extension Guide"
+      },
+      {
+        "command": "java.formatterSettings",
+        "category": "Java",
+        "title": "Open Java Formatter Settings with Preview"
+      }
+    ],
+    "configuration": {
+      "title": "Java Extension Pack",
+      "properties": {
+        "java.help.firstView": {
+          "type": [
+            "string"
+          ],
+          "enum": [
+            "auto",
+            "overview",
+            "gettingStarted",
+            "welcome",
+            "none"
+          ],
+          "enumDescriptions": [
+            "Automatically pick the first experience view",
+            "Present the Java Overview page",
+            "Present the Java Getting Started page",
+            "Present the Java Welcome page",
+            "Do not show any view"
+          ],
+          "default": "auto",
+          "description": "Sets the default view which is presented during the first use.",
+          "scope": "window"
+        },
+        "java.help.showReleaseNotes": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show Java Extension Pack release notes on startup.",
+          "scope": "window"
+        }
+      }
+    },
+    "menus": {
+      "view/title": [
+        {
+          "command": "java.runtime",
+          "group": "overflow_30@10",
+          "when": "view == javaProjectExplorer"
+        },
+        {
+          "command": "java.classpathConfiguration",
+          "group": "overflow_30@20",
+          "when": "view == javaProjectExplorer"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "java.classpathConfiguration",
+          "group": "9_configuration@20",
+          "when": "view == javaProjectExplorer && viewItem =~ /java:project(?=.*?\\b\\+unmanagedFolder\\b)(?=.*?\\b\\+uri\\b)/"
+        }
+      ]
+    },
+    "customEditors": [
+      {
+        "viewType": "java.formatterSettingsEditor",
+        "displayName": "Java Formatter Settings Editor",
+        "selector": [
+          {
+            "filenamePattern": "*.xml"
+          }
+        ],
+        "priority": "option"
       }
     ]
   },
   "scripts": {
-    "vscode:prepublish": "npm run compile&npm run build-assets",
-    "compile": "tsc -p ./",
-    "watch": "tsc -watch -p ./",
-    "build-assets": "webpack --config webpack.config.js",
-    "watch-assets": "webpack --config webpack.config.js --watch",
-    "postinstall": "node ./node_modules/vscode/bin/install",
-    "test": "npm run compile && node ./node_modules/vscode/bin/test"
+    "vscode:prepublish": "npm run build",
+    "compile": "webpack --config webpack.config.js",
+    "watch": "webpack --config webpack.config.js --watch --info-verbosity verbose",
+    "build": "webpack --config webpack.config.js --mode=\"production\""
   },
   "devDependencies": {
-    "@types/jquery": "^3.3.6",
-    "@types/node": "^8.0.0",
+    "@iconify-icons/codicon": "^1.1.8",
+    "@iconify/react": "^1.1.3",
+    "@reduxjs/toolkit": "^1.5.0",
+    "@types/bytes": "^3.1.0",
+    "@types/expand-tilde": "^2.0.0",
+    "@types/lodash": "^4.14.161",
+    "@types/minimatch": "^3.0.3",
+    "@types/node": "^8.10.63",
+    "@types/path-exists": "^3.0.0",
+    "@types/react": "^17.0.0",
+    "@types/react-dom": "^16.9.8",
+    "@types/react-redux": "^7.1.16",
+    "@types/request": "^2.48.5",
+    "@types/request-promise-native": "^1.0.17",
+    "@types/semver": "^5.5.0",
+    "@types/vscode": "1.52.0",
+    "@types/winreg": "^1.2.30",
+    "arch": "^2.1.2",
     "autoprefixer": "^8.5.1",
-    "bootstrap": "^4.1.1",
-    "css-loader": "^0.28.11",
+    "bootstrap": "^4.5.2",
+    "bytes": "^3.1.0",
+    "css-loader": "^3.6.0",
+    "expand-tilde": "^2.0.2",
+    "file-loader": "^6.2.0",
+    "find-java-home": "^1.1.0",
+    "highlight.js": "10.5.0",
     "html-webpack-inline-source-plugin": "0.0.10",
     "html-webpack-plugin": "^3.2.0",
-    "jquery": "^3.3.1",
-    "node-sass": "^4.9.0",
-    "popper.js": "^1.14.3",
+    "jquery": "^3.5.1",
+    "lodash": "^4.17.20",
+    "minimatch": "^3.0.4",
+    "node-sass": "^4.14.1",
+    "path-exists": "^3.0.0",
+    "popper.js": "^1.16.1",
     "postcss-loader": "^2.1.5",
-    "sass-loader": "^7.0.1",
+    "react": "^17.0.1",
+    "react-bootstrap": "^1.4.3",
+    "react-dom": "^17.0.1",
+    "react-redux": "^7.2.2",
+    "request": "^2.88.2",
+    "request-promise-native": "^1.0.9",
+    "sass-loader": "^7.3.1",
     "style-loader": "^0.21.0",
     "ts-loader": "^4.3.0",
-    "tslint": "^5.8.0",
-    "typescript": "^2.6.1",
-    "vscode": "^1.1.17",
-    "webpack": "^4.8.3",
-    "webpack-cli": "^2.1.4"
+    "tslint": "^5.20.1",
+    "typescript": "^3.7.5",
+    "url-loader": "^4.1.1",
+    "vscode-tas-client": "^0.1.22",
+    "webpack": "^4.44.1",
+    "webpack-cli": "^3.3.12"
   },
   "extensionPack": [
     "redhat.java",
     "vscjava.vscode-java-debug",
     "vscjava.vscode-java-test",
-    "vscjava.vscode-maven"
+    "vscjava.vscode-maven",
+    "vscjava.vscode-java-dependency",
+    "VisualStudioExptTeam.vscodeintellicode"
   ],
   "dependencies": {
-    "openurl": "^1.1.1",
-    "vscode-extension-telemetry-wrapper": "^0.3.0"
+    "@types/fs-extra": "^9.0.1",
+    "compare-versions": "^3.6.0",
+    "expand-home-dir": "0.0.3",
+    "fs-extra": "^9.0.1",
+    "semver": "^5.7.1",
+    "vscode-extension-telemetry-wrapper": "^0.9.0",
+    "winreg-utf8": "^0.1.1"
   }
 }
